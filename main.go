@@ -1,6 +1,11 @@
 package textgenerationapiollama
 
-import textgenerationapi "github.com/greatoldcactus/textgenerationapi"
+import (
+	"errors"
+	"fmt"
+
+	textgenerationapi "github.com/greatoldcactus/textgenerationapi"
+)
 
 type TextGenerationAPIOllama struct {
 	Url          string
@@ -50,4 +55,36 @@ func (a *TextGenerationAPIOllama) SetUrl(url string) (err error) {
 func (a *TextGenerationAPIOllama) GetUrl() (url string, err error) {
 	url = a.Url
 	return
+}
+
+var ErrFailedToListModels = errors.New("failed to list models")
+var ErrUnknownModel = errors.New("error unknown model")
+
+func (a *TextGenerationAPIOllama) SetModel(model string) error {
+	models, err := a.ListModels()
+	if err != nil {
+		return fmt.Errorf("%w: %w", ErrFailedToListModels, err)
+	}
+
+	model_ok := false
+
+	for _, model_check := range models {
+		if model_check == model {
+			model_ok = true
+			break
+		}
+	}
+
+	if !model_ok {
+		return fmt.Errorf("%w: %s", ErrUnknownModel, model)
+	}
+
+	a.Model = model
+
+	return nil
+
+}
+
+func (a *TextGenerationAPIOllama) GetModel() string {
+	return a.Model
 }
