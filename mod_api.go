@@ -77,3 +77,12 @@ func (sa *TextGenerationAPIOllama) ListModels() (models []string, err error) {
 	return
 
 }
+
+func (a *TextGenerationAPIOllama) SetAnswerTokens(tokens int) error {
+	a.AnswerTokens = tokens
+	return nil
+}
+
+func (a *TextGenerationAPIOllama) GetAnswerTokens() int {
+	return a.AnswerTokens
+}
